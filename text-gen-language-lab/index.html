@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text Generation Language Lab</title>
+<link rel="stylesheet" href="../all.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <ul class="menu">
+        <li>
+            <a href="../index.html">Home</a>
+        </li>
+        <li>
+            <a href="../image-annotation/index.html">Image Annotation</a>
+        </li>
+        <li>
+            <a href="../text-gen-language-lab/index.html">Code Lab</a>
+        </li>
+    </ul>
+    <h1>Text Generation Language Lab</h1>
+    
+    <!-- Form for adding/removing data -->
+    <div id="dataForm">
+      <div id="dataList">
+        <!-- Data rows will be added dynamically here -->
+      </div>
+      <div class="data-buttons">
+        <button id="addDataRowBtn">Add Data Row</button>
+        <button id="clearDataBtn">Clear Data</button>
+      </div>
+    </div>
+    
+    <hr>
+    
+    <!-- Form for entering code -->
+    <div id="codeForm">
+      <label for="code">Code:</label>
+      <textarea id="code" placeholder="Enter code"></textarea>
+      <button id="submitBtn">Submit</button>
+      <button id="saveBtn">Save Code</button>
+    </div>
+    
+    <hr>
+    
+    <!-- Display area for result -->
+    <div id="result">
+      <h2>Result:</h2>
+      <pre id="resultText"></pre>
+    </div>
+
+    <!-- Modal for saving code -->
+    <div id="saveModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="close-save">&times;</span>
+        <h2>Save Code</h2>
+        <label for="codeName">Name:</label>
+        <input type="text" id="codeName" placeholder="Enter code name">
+        <label for="codeDescription">Description (optional):</label>
+        <textarea id="codeDescription" placeholder="Enter code description"></textarea>
+        <button id="saveCodeBtn">Save</button>
+      </div>
+    </div>
+
+    <!-- Modal for description -->
+    <div id="descModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="close-desc">&times;</span>
+        <h2 id="desc-title"></h2>
+        <div id="desc"></div>
+      </div>
+    </div>
+    
+      <!-- Display area for saved codes -->
+      <div id="samples">
+        <h2>Saved Codes:</h2>
+        <ol id="savedCodesList">
+            <!-- Saved codes will be added dynamically here -->
+        </ol>
+    </div>
+
+  </div>
+
+  <script src="entites.js"></script>
+  <script src="parse.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

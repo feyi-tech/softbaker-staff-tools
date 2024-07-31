@@ -1,0 +1,3 @@
+ul.menu { display: flex; justify-content: flex-start;align-items: flex-start;}
+
+ul.menu li { margin-right: 1.5rem;}
