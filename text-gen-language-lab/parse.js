@@ -134,7 +134,6 @@ function parseCode(code, data) {
     // Replace variables and handle special syntax
     const repList = []
     let intermediateResult = code.replace(/\(([^()]*)\)/g, (match, p1) => {
-      console.log("P1: ", p1)
       // Check for special syntax within parentheses
       if (p1.startsWith("rn[")) {
         // Random number generation
