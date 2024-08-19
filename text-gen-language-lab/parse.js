@@ -74,9 +74,67 @@ function parseCode(code, data) {
       return '';
     }
   
+    function extractVariables(code) {
+      const regex = /{([^{}]+?)}(\.\w+\[(.*?)\])?/g;
+      const results = [];
+      let match;
+  
+        while ((match = regex.exec(code)) !== null) {
+            const varKey = match[1];
+            const varFunc = match[2] ? match[2].split('[')[0].slice(1) : null;
+            const varFuncArgs = match[3] ? match[3].split(',').map(arg => arg.trim()) : [];
+    
+            const replacementStart = match.index;
+            const replacementEnd = match.index + match[0].length - 1;
+    
+            results.push({
+                varKey,
+                varFunc: varFunc || undefined,
+                varFuncArgs: varFuncArgs.length ? varFuncArgs : undefined,
+                replacementStart,
+                replacementEnd
+            });
+        }
+    
+        return results;
+    }
+
+    function replaceSubtext(text, replacementText, start, end) {
+      // Extract the parts
+      const before = text.slice(0, start);
+      const after = text.slice(end + 1);
+  
+      // Construct the new text
+      return before + replacementText + after;
+    }
+
+    function callVarFunc (variable, varFunc, varFuncArgs) {
+      var result = null
+      switch (varFunc) {
+        case "cut":
+          if(varFuncArgs && varFuncArgs.length == 2) {
+            try {
+              var var1 = parseInt(varFuncArgs[0])
+              var var2 = parseInt(varFuncArgs[1])
+
+              result = variable.substring(var1 - 1, var2)
+
+            } catch(e) {}
+          }
+          break;
+      
+        default:
+          break;
+      }
+
+      return result
+
+    }
+  
     // Replace variables and handle special syntax
     const repList = []
     let intermediateResult = code.replace(/\(([^()]*)\)/g, (match, p1) => {
+      console.log("P1: ", p1)
       // Check for special syntax within parentheses
       if (p1.startsWith("rn[")) {
         // Random number generation
@@ -104,17 +162,27 @@ function parseCode(code, data) {
       } else if(p1.includes("{") && p1.includes("}")) {
         // Variable substitution
         //'abc{var}ghi', 'abc{var}', '{var}'
-        var varAndItDependants = p1.split(/[{}]/)
-        var variable = substituteVariable(varAndItDependants[1])
-        //Only return the dependents along with the variable if the variable exists
-        if(variable && variable.length > 0) {
-            varAndItDependants[1] = variable
-            variable = varAndItDependants.join("")
+        var p1CodeExtraction = extractVariables(p1)
 
-        } else {
-            variable = ""
+        // Sort the extractions in reverse order of `replacementStart` to avoid position shifting during replacemen
+        p1CodeExtraction.sort((a, b) => b.replacementStart - a.replacementStart);
+
+        for(const extraction of p1CodeExtraction) {
+          var variable = substituteVariable(extraction.varKey)
+          if(extraction.varFunc) {
+            variable = callVarFunc(variable, extraction.varFunc, extraction.varFuncArgs)
+          }
+
+          if(variable && p1.length > 0) {
+            p1 = replaceSubtext(p1, variable, extraction.replacementStart, extraction.replacementEnd)
+
+          } else {
+            p1 = ""
+            break
+          }
         }
-        return variable;
+        
+        return p1;
 
       } else {
         return p1
