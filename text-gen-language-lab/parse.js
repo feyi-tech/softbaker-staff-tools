@@ -1,3 +1,37 @@
+function formatDate(date, format) {
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  const replacements = {
+      YYYY: date.getFullYear().toString(), // Full year
+      YY: String(date.getFullYear()).slice(-2), // Last two digits of year
+      MMMM: monthNames[date.getMonth()], // Full month name
+      MMM: monthNames[date.getMonth()].slice(0, 3), // Abbreviated month name
+      MM: String(date.getMonth() + 1).padStart(2, '0'), // Month number with leading zero
+      M: (date.getMonth() + 1).toString(), // Month number without leading zero
+      DD: String(date.getDate()).padStart(2, '0'), // Day of the month with leading zero
+      D: date.getDate().toString(), // Day of the month without leading zero
+      dddd: dayNames[date.getDay()], // Full day of the week name
+      ddd: dayNames[date.getDay()].slice(0, 3), // Abbreviated day of the week name
+      HH: String(date.getHours()).padStart(2, '0'), // Hour (24-hour format) with leading zero
+      H: date.getHours().toString(), // Hour (24-hour format) without leading zero
+      hh: String((date.getHours() % 12) || 12).padStart(2, '0'), // Hour (12-hour format) with leading zero
+      h: ((date.getHours() % 12) || 12).toString(), // Hour (12-hour format) without leading zero
+      mm: String(date.getMinutes()).padStart(2, '0'), // Minutes with leading zero
+      m: date.getMinutes().toString(), // Minutes without leading zero
+      ss: String(date.getSeconds()).padStart(2, '0'), // Seconds with leading zero
+      s: date.getSeconds().toString(), // Seconds without leading zero
+      A: date.getHours() < 12 ? 'AM' : 'PM', // AM or PM
+      a: date.getHours() < 12 ? 'am' : 'pm' // am or pm
+  };
+
+  // Handle escape characters
+  return replacements[format] || "";
+}
+
 // Function to parse the code and substitute variables
 function parseCode(code, data) {
     code = replaceEntitiesWithCharacters(code)
@@ -120,6 +154,17 @@ function parseCode(code, data) {
               result = variable.substring(var1 - 1, var2)
 
             } catch(e) {}
+          }
+          break;
+        case "df":console.log("df", varFuncArgs)
+          if(varFuncArgs && varFuncArgs.length == 1) {
+            try {
+              var format = varFuncArgs[0]
+              var date = variable == "_"? new Date() : new Date(variable)
+
+              result = formatDate(date, format)
+
+            } catch(e) {console.log(e)}
           }
           break;
       
